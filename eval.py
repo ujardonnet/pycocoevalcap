@@ -4,7 +4,7 @@ from .bleu.bleu import Bleu
 from .meteor.meteor import Meteor
 from .rouge.rouge import Rouge
 from .cider.cider import Cider
-from .spice.spice import Spice
+#from .spice.spice import Spice
 
 
 class COCOEvalCap:
@@ -16,7 +16,7 @@ class COCOEvalCap:
         self.cocoRes = cocoRes
         self.params = {'image_id': coco.getImgIds()}
 
-    def evaluate(self, scorers):
+    def evaluate(self):
         imgIds = self.params['image_id']
         # imgIds = self.coco.getImgIds()
         gts = {}
@@ -37,24 +37,13 @@ class COCOEvalCap:
         # Set up scorers
         # =================================================
         print('setting up scorers...')
-        all_scorers = [
+        scorers = [
             (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
             (Meteor(),"METEOR"),
             (Rouge(), "ROUGE_L"),
             (Cider(), "CIDEr"),
-            (Spice(), "SPICE")
+            #(Spice(), "SPICE")
         ]
-        scorers = [s.lower() for s in scorers]
-        if scorers is None:
-            scorers = all_scorers
-        else:
-            def pick(s):
-                if type(s) == list and "bleu" in scorers:
-                    return True
-                if s.lower() in scorers:
-                    return True
-                return False
-            scorers = [s for s in all_scorers if pick(s[1])]
 
         # =================================================
         # Compute scores
